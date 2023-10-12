@@ -1,0 +1,58 @@
+{% extends 'customer/base.html' %}
+
+
+{% block content %}
+
+<div class="container mt-5">
+    <h1>User Dashboard</h1>
+  
+    <!-- Create Event Form -->
+    <div class="card mb-4">
+      <div class="card-header">Create an Event</div>
+      <div class="card-body">
+    
+          <a href="{% url 'order' %}" type="button" class="btn btn-primary">Create Event</a>
+
+      </div>
+    </div>
+  
+    <!-- List of Past Events -->
+    <div class="card">
+      <div class="card-header">Past Orders</div>
+      <ul class="list-group list-group-flush" id="past-events-list">
+
+        {% for order in user_orders %}
+            <a class="ml-5" href="{% url 'order-detail' order.id %}">Customer: {{ order.client_full_name }} - Order ID: {{ order.id }} - Paid: {{ order.is_paid }}</a>
+        {% empty %}
+            <p class="text-center">You have no orders.</p>
+        {% endfor %}
+
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Inline JavaScript for demonstration -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const pastEventsList = document.getElementById("past-events-list");
+  
+      document.getElementById("create-event-form").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const eventName = document.getElementById("eventName").value;
+        const eventDate = document.getElementById("eventDate").value;
+  
+        // Add the new event to the list of past events.
+        const listItem = document.createElement("li");
+        listItem.className = "list-group-item";
+        listItem.textContent = `${eventName} - ${eventDate}`;
+        pastEventsList.appendChild(listItem);
+  
+        // Clear the form fields.
+        document.getElementById("eventName").value = "";
+        document.getElementById("eventDate").value = "";
+      });
+    });
+  </script>
+  
+
+{% endblock %}

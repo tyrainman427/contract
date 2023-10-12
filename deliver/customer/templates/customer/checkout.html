@@ -1,0 +1,153 @@
+{% extends 'customer/base.html' %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-12">
+        <h2>Your Cart</h2>
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Quantity</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in cart_items %}
+              <tr>
+                <td>{{ item.menu_item.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.menu_item.price }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <p class="text-right">Total Price: ${{ total_price }}</p>
+      </div>
+
+      <!-- User Info -->
+      <div class="col-6 mt-4">
+        <h4>Payment Information</h4>
+        <div class="mt-5 mb-5" id="card-element">
+          <!-- Stripe form will go here -->
+        </div>
+        <form id="user-info-form">
+          <div class="form-group">
+            <label for="first-name">First Name</label>
+            <input type="text" id="first-name" name="first-name" class="form-control" value="{{ user.first_name }}">
+          </div>
+          
+          <div class="form-group">
+            <label for="last-name">Last Name</label>
+            <input type="text" id="last-name" name="last-name" class="form-control" value="{{ user.last_name }}">
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" class="form-control" value="{{ user.email }}">
+          </div>
+          <div class="form-group">
+            <label for="address">Address</label>
+            <input type="text" id="address" name="address" class="form-control" value="{{ user.street_address }}">
+          </div>
+        </form>
+      </div>
+    
+      <!-- Stripe Elements -->
+      <div class="col-8 mt-4 mb-5">
+        <button id="submit-button" class="btn btn-success float-left mb-5">Pay</button>
+        <a href="{% url 'cart' %}" id="" class="btn btn-secondary float-left mb-5">Back To Cart</a>
+      </div>
+    </div>
+  </div>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+      var stripe = Stripe("{{ stripe_publishable_key }}");
+      var elements = stripe.elements();
+      var first_name = document.getElementById("first-name").value;
+      var last_name = document.getElementById("last-name").value;  // Assuming you want this as well
+      var email = document.getElementById("email").value;  // Assuming you want this as well
+      var address = document.getElementById("address").value; 
+
+      var card = elements.create("card");
+      card.mount("#card-element");
+
+      var submitButton = document.getElementById("submit-button");
+      submitButton.addEventListener("click", function() {
+        var first_name = document.getElementById("first-name").value;  // New line
+        var last_name = document.getElementById("last-name").value;  // Assuming you want this as well
+        var email = document.getElementById("email").value;  // Assuming you want this as well
+        var address = document.getElementById("address").value; 
+
+        stripe.createToken(card).then(function(result) {
+          if (result.error) {
+            // Display error
+            console.log(result.error);
+          } else {
+            var form = document.createElement("form");
+            form.setAttribute("method", "post");
+            form.setAttribute("action", "{% url 'checkout' %}");
+
+            // Add new user info fields
+
+            var firstNameInput = document.createElement("input");
+            firstNameInput.setAttribute("type", "hidden");
+            firstNameInput.setAttribute("name", "first_name");
+            firstNameInput.setAttribute("value", first_name);  // Note this line uses the variable
+            form.appendChild(firstNameInput);
+
+            var lastNameInput = document.createElement("input");
+            lastNameInput.setAttribute("type", "hidden");
+            lastNameInput.setAttribute("name", "last_name");
+            lastNameInput.setAttribute("value", last_name);
+            form.appendChild(lastNameInput);
+
+            var emailInput = document.createElement("input");
+            emailInput.setAttribute("type", "hidden");
+            emailInput.setAttribute("name", "email");
+            emailInput.setAttribute("value", email);
+            form.appendChild(emailInput);
+
+            var addressInput = document.createElement("input");
+            addressInput.setAttribute("type", "hidden");
+            addressInput.setAttribute("name", "address");
+            addressInput.setAttribute("value", address);
+            form.appendChild(addressInput);
+
+            // Add CSRF token
+            var csrfInput = document.createElement("input");
+            csrfInput.setAttribute("type", "hidden");
+            csrfInput.setAttribute("name", "csrfmiddlewaretoken");
+            csrfInput.setAttribute("value", "{{ csrf_token }}");
+            form.appendChild(csrfInput);
+            
+            var tokenInput = document.createElement("input");
+            tokenInput.setAttribute("type", "hidden");
+            tokenInput.setAttribute("name", "stripeToken");
+            tokenInput.setAttribute("value", result.token.id);
+            form.appendChild(tokenInput);
+
+            document.body.appendChild(form);
+            form.submit();
+          }
+        });
+      });
+    </script>
+  </div>
+{% endblock %}

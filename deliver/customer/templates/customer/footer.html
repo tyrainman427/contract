@@ -1,0 +1,8 @@
+<footer class="page-footer font-small fixed-bottom indigo mt-5">
+    <div class="footer-copyright text-center py-3">&copy; 2023 Copyright:
+        <a href="http://localhost:8000">DJ Bobby Drake</a>
+        {% if request.user.is_superuser %}
+        <a class="ml-3" href="{% url 'dashboard' %}">Dashboard</a>
+        {% endif %}
+    </div>
+</footer>

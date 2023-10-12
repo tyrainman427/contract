@@ -1,0 +1,290 @@
+{% extends 'customer/base.html' %}
+
+{% block content %}
+<div class="container mb-5">
+    <div class="row justify-content-center mt-1">
+        <div class="col-md-12 col-sm-12 p-4">
+            <div class="row justify-content-center mt-5">
+                <div class="col-md-8 col-sm-12 offset-md-1 p-4 text-center">
+                    <h1>DJ Bobby Drake Contract Agreement</h1>
+                </div>
+            </div>
+            <form id="myForm" method="POST">
+                {% csrf_token %}
+         
+                </div class="row">
+                <div class="col-md-3 col-sm-12">
+                    <div class="form-group pt-3">
+                        <label for="name">Client's Full Name</label>
+                        <input required class="form-control" type="text" placeholder="Client's Full Name" name="client_full_name" />
+                    </div>
+                </div>
+    
+                <div class="col-md-3 col-sm-12">
+                    <div class="form-group pt-3">
+                        <label for="name">Street Address</label>
+                        <input required class="form-control" type="text" placeholder="123 Main St" name="street_address" />
+                    </div>
+                </div>
+                    <div class="col-md-3 col-sm-12">
+                        <div class="form-group pt-3">
+                            <label for="name">City</label>
+                            <input required class="form-control" type="text" placeholder="Miami" name="city" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <div class="form-group pt-3">
+                            <label for="name">State</label>
+                            <input required class="form-control" type="text" placeholder="FL" name="state" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <div class="form-group pt-3">
+                            <label for="name">Zip Code</label>
+                            <input required class="form-control" type="text" placeholder="94117" name="zip_code" />
+                        </div>
+                    </div>
+              
+    
+            <div class="col-md-3 col-sm-12">
+                <div class="form-group pt-3">
+                    <label for="name">Cell Number</label>
+                    <input required class="form-control" type="text" placeholder="860 555 5555" name="cell_number" />
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-12">
+                <div class="form-group pt-3">
+                    <label for="name">Email Address</label>
+                    <input required class="form-control" type="text" placeholder="example@company.com" name="email" />
+                </div> 
+            </div>
+            <div class="col-md-3 col-sm-12">
+                <div class="form-group pt-3">
+                    <label for="name">Event Type</label>
+                    <input required class="form-control" type="text" name="event_type" />
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-12">
+                <div class="form-group pt-3">
+                    <label for="name">Event Date</label>
+                    <input required class="form-control" type="date" name="date_of_event" />
+                </div>
+            </div>
+            {% comment %} <div class="col-md-4 col-sm-12">
+                <div class="form-group">
+                    <label for="name">Event Time</label>
+                    <input required class="form-control" type="time" name="event_time" />
+                </div>
+            </div> {% endcomment %}
+            <div class="col-md-3 col-sm-12">
+                <div class="form-group pt-3">
+                    <label for="name">Number Of Guests</label>
+                    <input required class="form-control" type="text" placeholder="100" name="number_of_guests" />
+                </div> 
+            </div>
+
+        <div class="col-md-3 col-sm-12">
+            <div class="form-group pt-3">
+                <label for="name">Start Time</label>
+                <input required class="form-control" type="time" placeholder="4PM" name="start_time" />
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-12">
+            <div class="form-group pt-3">
+                <label for="name">End Time</label>
+                <input required class="form-control" type="time" placeholder="8PM" name="end_time" />
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="form-group pt-3">
+                <label for="name">Location of Event</label>
+                <input required class="form-control" type="text" placeholder="Italian Club" name="location_of_event" />
+            </div> 
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="input-group-prepend pt-3">
+                <label for="name">Type of Payment</label>
+              </div>
+              <select class="custom-select" id="inputGroupSelect01" required>   
+                <option selected>Choose...</option>
+                <option value="Advance Payment Deposit">Advance Payment Deposit</option>
+                <option value="Full Amount">Full Amount</option>
+              </select>
+            <!-- <div class="form-group pt-3">
+                <label for="name">Type of Payment</label>
+                <select class="form-select form-contro" aria-label="type_of_payment">
+                    <option selected>Open this select menu</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                  </select> -->
+                <!-- <input required class="form-control" type="text" placeholder="cash" name="type_of_payment" /> -->
+            <!-- </div> -->
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="input-group-prepend pt-3">
+                <label for="name">Method Of Payment</label>
+              </div>
+              <select class="custom-select" id="inputGroupSelect01" required>   
+                <option selected>Choose...</option>
+                <option value="Cash">Cash</option>
+                <option value="Zelle">Zelle</option>
+                <option value="Cashapp">Cashapp</option>
+                <option value="Venmo">Venmo</option>
+                <option value="Venmo">PayPal</option>
+              </select>
+            <!-- <div class="form-group pt-3">
+                <label for="name">Method of Payment</label>
+                <input required class="form-control" type="text" placeholder="cash on delivery" name="method_of_payment" /> 
+            </div> 
+            -->
+     </div>
+        <hr>
+
+                <h3 class="mt-5">TO RESERVE YOUR DATE</h3>
+        <div class="container">
+          <p>
+            To reserve your date, please sign and return this contract along with an advance payment deposit of $100.00. You may also choose to pay the full contracted
+             amount and a signed copy of this contract will be returned to you. This contract is not valid without advance payment and the balance is due two (2) weeks 
+             prior to your event. Any additional hours not originally contracted for must be paid at the conclusion of your event. Please make checks and money orders 
+             payable to Bobby Martin. (All Bookings Made Within Two Weeks of Your Event Must Be Paid in Full Before Event Date)
+            </p>
+
+            <h3 class="text-center mt-5">GENERAL INFORMATION</h3>
+
+            <p>
+              I am available to play over the contracted time only if permission is granted by the banquet facility. Should the event be canceled or this contract
+               be terminated by the client, advance payment deposit will be retained by LIVE CITY. Cancellation of this contract within 30 days of your event date 
+               will require full payment of the contracted amount and any cancellation must be made in writing via email or text message. Performance of these terms 
+               are subject to events beyond my control. LIVE CITY reserves the right to shut down sound or light systems should there be any threat of harm to anyone
+                in attendance. LIVE CITY cannot be held liable for any amount greater than the amount contracted for. Access to electricity is required at outdoor events.
+                 Tipping is at the discretion of the client.
+              </p>
+
+             <p> <input type="checkbox" id="agreeTerms" aria-label="Checkbox for following text input" class="mb-2"> Please check box if you agree to all terms.</p>
+              <br>
+              <form action="{% url 'user_dashboard' %}" method="post">
+                {% csrf_token %}
+                <button id="togglePickServicesBtn" type="submit" class="btn btn-primary mb-5">
+                    Order Details
+                </button>
+            </form>
+        </div>
+              
+  
+<!-- Modal -->
+<div class="modal fade" id="addServicesModal" tabindex="-1" aria-labelledby="addServicesModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addServicesModalLabel">Add Services</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <ul id="menu-item-list">
+                {% for item in menu_items %}
+                  <li>
+                    <form class="add-to-cart-form">
+                      {% csrf_token %}
+                      {{ item.name }} - ${{ item.price }}
+                      <input type="hidden" name="item_id" value="{{ item.id }}">
+                      <button type="submit">Add to Cart</button>
+                    </form>
+                  </li>
+                {% endfor %}
+              </ul>
+              
+              
+            <a href="{% url 'cart' %}">Go to cart</a>
+          </div>
+        <div class="modal-footer">
+          {% comment %} <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> {% endcomment %}
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+<script>
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+          window.location.reload();
+        }
+      });
+      
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get references to the checkbox and button elements
+        const agreeTermsCheckbox = document.getElementById('agreeTerms');
+        const pickServicesBtn = document.getElementById('pickServicesBtn');
+    
+        // Enable or disable the Pick Services button based on the checkbox state
+        function togglePickServicesBtn() {
+            if (agreeTermsCheckbox.checked) {
+                pickServicesBtn.removeAttribute('disabled');
+            } else {
+                pickServicesBtn.setAttribute('disabled', 'disabled');
+            }
+        }
+    
+        // Initialize the state of the Pick Services button
+        togglePickServicesBtn();
+    
+        // Listen for changes on the agreeTerms checkbox
+        agreeTermsCheckbox.addEventListener('change', togglePickServicesBtn);
+    });
+    
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const form = document.getElementById("add-to-cart-form");
+        form.addEventListener("submit", function(event) {
+          event.preventDefault();
+            
+            const formData = new FormData(form);
+            const itemId = formData.get('item_id');
+            
+            fetch('{% url "add_to_cart" %}', {
+              method: 'POST',
+              headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+              },
+              body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.status === 'success') {
+                      // Perform actions like updating the cart
+            }
+            })
+            .catch(error => {
+            console.error('Error:', error);
+            });
+        });
+        });
+</script>
+
+{% endblock content %}

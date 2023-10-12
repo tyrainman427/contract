@@ -1,0 +1,18 @@
+{% extends 'customer/base.html' %}
+
+{% block content %}
+<div class="container mb-5">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8 col-sm-12 offset-md-1 p-4 text-center">
+            <h1>DJ Bobby Drake Contract Agreement</h1>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-1">
+        <div class="card col-md-5 col-sm-12 offset-md-1 p-4 text-center">
+            <h2>Want to book a party?</h2>
+            <a href="{% url 'register' %}" class="btn btn-outline-primary">Get Pricing</a>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,125 @@
+{% extends 'customer/base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-8 offset-md-2">
+        <div class="card">
+          <div class="card-header">
+            <h2>Order Details</h2>
+          </div>
+          <div class="card-body">
+            <dl class="row">
+              <dt class="col-sm-3">Client Name:</dt>
+              <dd class="col-sm-9">{{ order.client_full_name }}</dd>
+
+              <dt class="col-sm-3">Total Cost:</dt>
+              <dd class="col-sm-9">${{ order.total_price }}</dd>
+
+              <dt class="col-sm-3">Status:</dt>
+              {% if order.is_paid %}
+              <dd class="col-sm-9">Paid</dd>
+              {% else %}
+              <dd class="col-sm-9">Not Paid</dd>
+              {% endif %}
+              <dt class="col-sm-3">Items in Order:</dt>  <!-- Changed from "Items in Cart" to "Items in Order" -->
+              <dd class="col-sm-9">
+                <ul>
+                  {% for item in order.items.all %}  <!-- Changed from "meal_items" to "order.items.all" -->
+                    <li>{{ item.name }} - ${{ item.price }}</li> <!-- Removed quantity as it might be in your OrderModel -->
+                  {% endfor %}
+                </ul>
+              </dd>
+            </dl>
+          </div>
+
+          <!-- Add Services Modal -->
+          <div class="modal fade" id="addServicesModal" tabindex="-1" aria-labelledby="addServicesModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                  <div id="addedToCartMessage" class="alert alert-success" style="display:none;"></div>
+
+                  <h5 class="modal-title" id="addServicesModalLabel">Add Services</h5>
+                </div>
+                <div class="modal-body">
+                  <ul id="menu-item-list" class="list-group">
+                    {% for item in menu_items %}
+                      <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ item.name }} - ${{ item.price }}
+                        {% with current_quantity=cart_quantities|get_item:item.id|default:0 %}
+                        {% if current_quantity >= item.max_quantity %}
+                            <!-- Button is hidden -->
+                            <button class="btn btn-primary add-to-cart" data-item-id="{{ item.id }}" disabled>Add to Cart</button>
+                        {% else %}
+                            <!-- Button is visible -->
+                            <button class="btn btn-primary add-to-cart" data-item-id="{{ item.id }}">Add to Cart</button>
+                        {% endif %}
+                    {% endwith %}
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+                <div class="modal-footer">
+                  <a href="{% url 'cart' %}" class="btn btn-success">Go to Cart</a>
+                  <a href="{% url 'order-detail' order.id %}" class="btn btn-info">Back to Details</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> 
+
+<!-- Footer Buttons -->
+<div class="card-footer text-end">
+  {% if not order.is_paid %}
+    <!-- Show the buttons only if the order is not paid -->
+    <a href="{% url 'order_edit' order.pk %}" class="btn btn-primary">Edit Order</a>
+    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#addServicesModal" onclick="$('#addServicesModal').modal('show');">Add Services</button>
+  {% endif %}
+  <a id="viewCartButton" href="{% url 'payment_confirmation' order.pk %}" class="btn btn-info">Payment Details</a>  <!-- View Cart Button -->
+ <a id="payNowButton" href="{% url 'order_pay' order.pk %}" class="btn btn-success" style="display:none;">Pay Now</a>
+
+</div>
+
+      </div>
+    </div>
+  </div> 
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Existing code for adding items to cart
+      document.querySelectorAll('.add-to-cart').forEach(function(button) {
+        button.addEventListener('click', function() {
+          let itemId = this.getAttribute('data-item-id');
+          fetch('{% url "add_to_cart" %}', {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': '{{ csrf_token }}',
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `item_id=${itemId}`
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === 'success') {
+              const messageDiv = document.getElementById('addedToCartMessage');
+              messageDiv.style.display = 'block';
+              messageDiv.textContent = data.message;
+    
+              // Auto-hide the message after 5 seconds
+              setTimeout(function() {
+                messageDiv.style.display = 'none';
+              }, 2000);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+        });
+      });
+    });
+    
+  
+  </script>
+{% endblock %}
