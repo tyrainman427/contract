@@ -23,10 +23,8 @@ from django.db import transaction
 from django.urls import reverse
 import logging
 from collections import defaultdict
+from django.db.models import Sum
 
-
-# Initialize logger
-logger = logging.getLogger(__name__)
 
 
 # Initialize Stripe
@@ -45,7 +43,6 @@ class OrderForm(forms.ModelForm):
             'email','street_address', 'city', 'state', 'zip_code'
         ]
 
-
 def register(request):
     if request.user.is_authenticated:
         return redirect('user_dashboard')
@@ -54,7 +51,15 @@ def register(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            
+            # Explicitly specify the backend to use
+            backend = authenticate(
+                username=form.cleaned_data['username'], 
+                password=form.cleaned_data['password1']
+            )
+            
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')  # Adjust this to your backend
+
             return redirect('user_dashboard')  # Redirect to a home page or some other page
     else:
         form = CustomUserCreationForm()
@@ -71,7 +76,6 @@ def user_login(request):
         form = CustomAuthenticationForm()
     return render(request, 'login.html', {'form': form})
 
-
 class Index(View):
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -79,13 +83,20 @@ class Index(View):
         else:
             return render(request, 'customer/index.html')
 
-
 class About(View):
     def get(self, request, *args, **kwargs):
         return render(request, 'customer/about.html')
 
 class Order(View):
     def get(self, request, *args, **kwargs):
+       # Check if an unpaid order exists for the user
+        existing_unpaid_order = OrderModel.objects.filter(user=request.user, is_paid=False).first()
+        
+        if existing_unpaid_order:
+            # Redirect to the order details page for the existing unpaid order
+            return redirect(reverse('order-detail', args=[existing_unpaid_order.id]))
+
+
         # Retrieve menu items from each category
         visuals = MenuItem.objects.filter(category__name__contains='Visuals')
         time = MenuItem.objects.filter(category__name__contains='Time')
@@ -118,6 +129,13 @@ class Order(View):
         return render(request, 'customer/order.html', context)
 
     def post(self, request, *args, **kwargs):
+        # Check if an unpaid order exists for the user
+        existing_unpaid_order = OrderModel.objects.filter(user=request.user, is_paid=False).first()
+        
+        if existing_unpaid_order:
+            # Redirect to payment page for the existing unpaid order, or show a message
+            return redirect(reverse('order-detail', args=[existing_unpaid_order.id]))
+
         try:
             form = OrderForm(request.POST)
             if form.is_valid():
@@ -149,8 +167,6 @@ class Order(View):
         except Exception as e:
             print(f"An error occurred: {e}")  # Debugging: print exceptions to the console
             return JsonResponse({"status": "error", "message": str(e)})
-
-        
         
 class OrderConfirmation(LoginRequiredMixin, View):
     def get(self, request, order_id, *args, **kwargs):
@@ -259,8 +275,6 @@ class MenuSearch(View):
 
         return render(request, 'customer/menu_search.html', context)
 
-from django.db import transaction
-
 class AddToCart(View):
     def post(self, request, *args, **kwargs):
         print(f"Entire POST payload: {request.POST}")
@@ -327,7 +341,6 @@ class AddToCart(View):
         except Exception as e:
             print(f"An exception occurred: {e}")
             return JsonResponse({"status": f"An error occurred: {str(e)}"})
-
 
 class RemoveFromCartView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
@@ -398,7 +411,6 @@ class CheckoutView(LoginRequiredMixin, View):
             except stripe.error.CardError as e:
                 messages.error(request, "Your card has been declined.")
         
-
 class Cart(View):
     def get(self, request, *args, **kwargs):
         cart_items = CartItem.objects.filter(user=request.user)

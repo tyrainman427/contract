@@ -4,10 +4,11 @@ from customer.models import OrderModel
 from django.utils.timezone import datetime
 from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
-
 from decimal import Decimal
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
-@login_required
+@method_decorator(login_required, name='dispatch')
 class Dashboard(View):
     def get(self, request, *args, **kwargs):
         # get the current date

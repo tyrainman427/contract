@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+# Load .env file
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -177,29 +182,8 @@ LOGOUT_REDIRECT_URL = 'index'
 
 
 
-STRIPE_PUBLISHABLE_KEY = 'pk_test_51E7dUGL624H4xtkP5AVXs2YVZsCNMcK5kYqe1MvTn0azcQFAEAHc0CzuGgK6LWxn5G78vrakYBmY0H5i0FPCJOLX005otQscHx'
-STRIPE_SECRET_KEY = 'sk_test_51E7dUGL624H4xtkP8W9tTzoLOeWiluisZJdDlt9Bvf2jc5fs62D4HcUhLdz9jS03tuR4btEyMyV9DdT1Gi4RZkuU00OV40hJd9'
+STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+
 
 AUTH_USER_MODEL = 'customer.CustomUser'
-
-# settings.py
-import logging
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'logs/debug.log',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    },
-}
