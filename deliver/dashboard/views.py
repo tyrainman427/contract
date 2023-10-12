@@ -67,7 +67,7 @@ class OrderDetails(View):
 
     def post(self, request, pk, *args, **kwargs):
         order = OrderModel.objects.get(pk=pk)
-        # order.is_shipped = True
+        order.is_completed = True
         order.save()
 
         context = {

@@ -72,14 +72,15 @@
 
 <!-- Footer Buttons -->
 <div class="card-footer text-end">
-  {% if not order.is_paid %}
-    <!-- Show the buttons only if the order is not paid -->
-    <a href="{% url 'order_edit' order.pk %}" class="btn btn-primary">Edit Order</a>
-    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#addServicesModal" onclick="$('#addServicesModal').modal('show');">Add Services</button>
-  {% endif %}
+  {% if order.is_paid %}
   <a id="viewCartButton" href="{% url 'payment_confirmation' order.pk %}" class="btn btn-info">Payment Details</a>  <!-- View Cart Button -->
- <a id="payNowButton" href="{% url 'order_pay' order.pk %}" class="btn btn-success" style="display:none;">Pay Now</a>
+  {% else %}
+      <!-- Show the buttons only if the order is not paid -->
+      <a href="{% url 'order_edit' order.pk %}" class="btn btn-primary">Edit Order</a>
+      <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#addServicesModal" onclick="$('#addServicesModal').modal('show');">Add Services</button>
 
+ <a id="payNowButton" href="{% url 'order_pay' order.pk %}" class="btn btn-success" style="display:none;">Pay Now</a>
+ {% endif %}
 </div>
 
       </div>
